@@ -1,0 +1,34 @@
+#lang racket
+(define (longest arr)
+  (define (helper arr acc)
+    (cond
+      [(empty? arr) acc]
+      [else (helper (rest arr) (cons (first arr) acc))]))
+  (helper arr empty))
+
+(define (maxSum arr)
+  (cond
+    [(empty? arr) (cons 0 (cons empty empty))]
+    [else
+     (let ([max_so_far -9999999]
+           [max_ending_here 0]
+           [acc (list-ref arr 0)])
+       (for ([i arr])
+         (set! max_ending_here (+ max_ending_here i))
+         (if (< max_so_far max_ending_here) (begin (set! acc (cons i acc)) (set! max_so_far max_ending_here)) (set! acc (cons i acc)))
+         (if (< max_ending_here 0) (begin (set! acc empty) (set! max_ending_here 0)) max_ending_here))
+       (for ([j acc])
+         (if (not (= (sum acc) max_so_far)) (set! acc (rest acc)) acc))
+       (cons max_so_far (cons (reverse acc) empty)))]))
+
+(define (sum a)
+  (foldl (lambda (x acc) (+ x acc)) 0 a))
+
+(define a '(5 -8 7 41 12 0))
+(define b '(-2 -3 4 -1 -2 1 5 -1 -1 -1 -1 -1 -1))
+(define c '(-1 -1 -1 -1 -1 -1 -1 -1 -1 -4 -1))
+(maxSum a)
+;(sum a)
+(maxSum b)
+(maxSum c)
+;(sum b)

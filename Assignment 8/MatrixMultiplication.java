@@ -18,6 +18,16 @@ public class MatrixMultiplication{
 		int[][] h = genRandomMatrix();
 		res = matrixMult(g, h);
 		printMatrix(res);
+		
+		System.out.println("\tTranspose\n");
+		printMatrix(d);
+		matrixTransposeRecursive(d, 0,0, 5);
+		printMatrix(d);
+		
+		System.out.println("\tAdd\n");
+		printMatrix(a);
+		printMatrix(b);
+		printMatrix(matrixAdd(a, d));		
 	}
 	
 	public static int[][] genRandomMatrix(){
@@ -38,6 +48,10 @@ public class MatrixMultiplication{
 	public static void printMatrix(int[][] m){
 		System.out.println("\nMatrix");
 		String border = "";
+		if(m.length == 0 || m[0].length == 0){
+			System.out.println("Error, unable to print matrix.");
+			return;
+		}
 		for(int i = 0; i < m[0].length; i++){
 			System.out.print("\t " + (i + 1));
 			border += "_________";
@@ -80,5 +94,58 @@ public class MatrixMultiplication{
 		System.out.println("INPUT DIMENSIONS: a: {" + a.length + "," + a[0].length+"}, b: {"+ b.length +","+ b[0].length+"}");		
 		System.out.println("numMultiplications to compute: " + numMultiplications);
 		return res;
+	}
+	
+	public static void matrixTransposeRecursive(int[][] A, int r, int c, int s){
+	    if(s == 1){
+	        return;
+	    }
+	    else{
+	        int x = (int) Math.floor(s / 2);
+	        matrixTransposeRecursive(A, r, c, x);
+	        matrixTransposeRecursive(A, r + x, c + x, s - x);
+	        matrixTransposeSwap(A, r, c + x, r + x, c, x, s - x);
+	    }
+	}
+	
+	public static void matrixTransposeSwap(int[][] A, int r1, int c1, int r2, int c2, int s1, int s2){
+	    if(s1 < s2){
+	        matrixTransposeSwap(A, r2, c2, r1, c1, s2, s1);
+	    }
+	    else if(s1 == 1){
+	        int temp = A[r1][c1];
+	        A[r1][c1] = A[r2][c2];
+	        A[r2][c2] = temp;
+	    }
+	    else{
+	        int x = (int) Math.floor(s1 / 2);
+	        matrixTransposeSwap(A, r2, c2, r1, c1, s2, x);
+	        matrixTransposeSwap(A, r2, c2 + x, r1 + x, c1, s2, s1 - x);
+	    }
+	}
+	
+	public static int[][] matrixAdd(int[][] a, int[][] b){
+		int ar = a.length;
+		int br = b.length;
+		int[][] res = new int[0][0];
+		if(ar == 0 || br == 0){
+			return res;
+		}
+		else{
+			int ac = a[0].length;
+			int bc = b[0].length;
+			if (ac != bc || ar != br || ac != br){
+				return res;
+			}
+			else{
+				res = new int[ar][ac];
+				for(int i = 0; i < ar; i++){
+					for(int j = 0; j < ac; j++){
+						res[i][j] = a[i][j] + b[i][j];
+					}
+				}
+				return res;
+			}
+		}
 	}
 }
